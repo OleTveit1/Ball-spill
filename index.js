@@ -319,7 +319,7 @@ hovedBall.prototype.KollisjonSjekk = function () {
             this.size += baller[i].size / 10;
             this.ballerSpist++;
 
-            reduceSizeAllBalls();
+            gjørBallerMindre();
 
             addNewBall();
           }
@@ -386,7 +386,7 @@ function loop() {
   animationFrameId = requestAnimationFrame(loop);
 }
 
-function reduceSizeAllBalls() {
+function gjørBallerMindre() {
   let number = Math.floor((width + height) / 25 * 2);
   for (let i = 0; i < baller.length; i++) {
     baller[i].size = baller[i].size - baller[i].size *  0.5/number;
@@ -399,7 +399,7 @@ function reduceSizeAllBalls() {
 }
 
 function addNewBall() {
-  reduceSizeAllBalls();
+  gjørBallerMindre();
   let number = Math.floor((width + height) / 25);
   let size = random(Math.floor(((width + height)) / 200), Math.floor(((width + height)) / 20));
   let ball = new Ball(
