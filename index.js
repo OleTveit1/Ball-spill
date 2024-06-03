@@ -12,20 +12,20 @@ let timerIntervall;
 let vekstIntervall;
 let spillStartet = false;
 let leggerTilNyeBaller = false;
-let areControlsEnabled = false;
+let kontrollerPå = false;
 
 
 
 
 
 
-document.getElementById('mouse-control').addEventListener('click', function () {
-  musEllerTastatur = 'mouse';
+document.getElementById('musKontroll').addEventListener('click', function () {
+  musEllerTastatur = 'mus';
   startSpill();
 });
 
-document.getElementById('keyboard-control').addEventListener('click', function () {
-  musEllerTastatur = 'keyboard';
+document.getElementById('tastaturKontroll').addEventListener('click', function () {
+  musEllerTastatur = 'tastatur';
   startSpill();
 });
 
@@ -206,7 +206,7 @@ hovedBall.prototype.checkBounds = function () {
   this.touchingLeft = false;
   this.touchingRight = false;
 
-  if (musEllerTastatur === 'mouse') {
+  if (musEllerTastatur === 'mus') {
     if ((this.x + this.size / 2) >= width * 0.9) {
       this.touchingRight = true;
     }
@@ -231,7 +231,7 @@ hovedBall.prototype.checkBounds = function () {
     if ((this.y - this.size / 2) <= 0) {
       this.y = this.size / 2;
     }
-  } else if (musEllerTastatur === 'keyboard') {
+  } else if (musEllerTastatur === 'tastatur') {
     if ((this.x + this.size / 2) >= width * 0.9 + 1) {
       this.x = width * 0.9 - this.size / 2;
       this.touchingRight = true;
@@ -255,7 +255,7 @@ hovedBall.prototype.setControls = function () {
   const _this = this;
   let keys = {};
 
-  if (musEllerTastatur === 'keyboard') {
+  if (musEllerTastatur === 'tastatur') {
     window.onkeydown = function (e) {
       keys[e.keyCode] = true;
     }
@@ -283,9 +283,9 @@ hovedBall.prototype.setControls = function () {
     updatePosition();
   }
 
-  if (musEllerTastatur === 'mouse') {
+  if (musEllerTastatur === 'mus') {
     canvas.addEventListener('mousemove', function (e) {
-      if (areControlsEnabled) {
+      if (kontrollerPå) {
         let rect = canvas.getBoundingClientRect();
         _this.x = e.clientX - rect.left;
         _this.y = e.clientY - rect.top;
@@ -316,7 +316,7 @@ hovedBall.prototype.KollisjonSjekk = function () {
 
             gjørBallerMindre();
 
-            addNewBall();
+            lagNyBall();
           }
         }
       }
@@ -364,7 +364,7 @@ function loop() {
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.fillRect(0, 0, width, height);
 
-  areControlsEnabled = true;
+  kontrollerPå = true;
 
   for (let i = 0; i < baller.length; i++) {
     if (baller[i].exists) {
@@ -393,46 +393,35 @@ function gjørBallerMindre() {
     hoved.size = Math.floor(((width + height)) / 200) + Math.floor(((width + height)) / 20) / 3;
 }
 
-function addNewBall() {
-  let number = Math.floor((width + height) / 25);
-  let size = random(Math.floor(((width + height)) / 200), Math.floor(((width + height)) / 20));
-  let ball = new Ball(
-    random(0 + size, width - size),
-    random(0 + size, height - size),
-    random((-125 / size), (125 / size)),
-    random((-125 / size), (125 / size)),
-    true,
-    'darkgreen',
-    size
-  );
-  baller.push(ball);
+function lagNyBall() {
+  if (startLagingAvBaller && leggerTilNyeBaller) {
+    let size = random(Math.floor(((width + height)) / 200), Math.floor(((width + height)) / 20));
+    let ball = new Ball(
+      random(0 + size, width - size),
+      random(0 + size, height - size),
+      random((-125 / size), (125 / size)),
+      random((-125 / size), (125 / size)),
+      true,
+      'darkgreen',
+      size
+    );
+    baller.push(ball);
+  }
 }
 
 function startLagingAvBaller() {
-  if (!spillStartet && !leggerTilNyeBaller) {
+  if (startSpill && !leggerTilNyeBaller) {
     leggerTilNyeBaller = true;
     let number = Math.floor((width + height) / 25);
     console.log(number)
     let i = 0;
-
-    let addBallInterval = setInterval(function () {
+    let leggTilBallerIntervall = setInterval(function () {
       if (i < number) {
-        let size = random(Math.floor(((width + height)) / 200), Math.floor(((width + height)) / 20));
-        let ball = new Ball(
-          random(0 + size, width - size),
-          random(0 + size, height - size),
-          random((-125 / size), (125 / size)),
-          random((-125 / size), (125 / size)),
-          true,
-          'darkgreen',
-          size
-        );
-        console.log(i)
-
-        baller.push(ball);
+        lagNyBall();
         i++;
-      } else {
-        clearInterval(addBallInterval);
+      }
+      else {
+        clearInterval(leggTilBallerIntervall);
         leggerTilNyeBaller = false;
       }
     }, Math.floor((1000000) / (width + height)));
@@ -448,11 +437,11 @@ let animationFrameId;
 
 document.getElementById('spillIgjenKnapp').addEventListener('click', function () {
   document.getElementById('spillOverSkjerm').style.display = 'none';
-  resetSpill();
   startSpill();
 });
 
-function resetSpill() {
+
+function startSpill() {
   clearInterval(timerIntervall);
   clearInterval(vekstIntervall);
   cancelAnimationFrame(animationFrameId);
@@ -464,18 +453,14 @@ function resetSpill() {
   hoved = null;
   spillStartet = false;
   leggerTilNyeBaller = false;
-  areControlsEnabled = false;
+  kontrollerPå = false;
 
 
   tid.textContent = sek;
   document.body.classList.remove('skjultMus');
-}
-
-function startSpill() {
-  resetSpill();
 
 
-  document.getElementById('control-selection').style.display = 'none';
+  document.getElementById('kontrollMetode').style.display = 'none';
 
 
   hoved = new hovedBall(
@@ -494,10 +479,14 @@ function startSpill() {
 }
 
 function spillOver(antallSpist, sek) {
+
   baller = [];
   stoppTimer();
   stoppVoksing();
   cancelAnimationFrame(animationFrameId);
+  kontrollerPå = false;
+  leggerTilNyeBaller = false;
+
 
 
   let ballerSpistElement = document.getElementById('ballerSpist');

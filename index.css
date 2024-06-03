@@ -5,7 +5,7 @@ html, body {
   overflow: hidden;
 }
 
-#control-selection {
+#kontrollMetode {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,7 +14,7 @@ html, body {
   background: rgba(0, 0, 0, 0.8);
 }
 
-#control-selection h1 {
+#kontrollMetode h1 {
   color: white;
   margin-bottom: 20px;
 }
@@ -24,7 +24,7 @@ h2 {
   text-align: center;;
 }
 
-.control-button {
+.kontrollKnapp {
   background-color: #414141;
   color: white;
   border: none;
@@ -35,12 +35,12 @@ h2 {
   transition: background-color 0.3s, transform 0.3s;
 }
 
-.control-button:hover {
+.kontrollKnapp:hover {
   background-color: #414141;
   transform: scale(1.1);
 }
 
-.control-button:active {
+.kontrollKnapp:active {
   background-color: #414141;
 }
 
