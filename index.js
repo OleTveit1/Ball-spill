@@ -39,10 +39,6 @@ function sjekkOmAlleBallerErSpist() {
       break;
     }
   }
-  if (alleBallerSpist) {
-    spillStartet = false;
-    startLagingAvBaller();
-  }
 }
 
 function random(min, max) {
@@ -141,7 +137,6 @@ function hovedBall(x, y, exists) {
   this.startingSize = Math.floor((width + height) / 300);
   this.eating = false;
   this.ballerSpist = 0;
-  this.totalBallsToEat = 0;
 }
 
 hovedBall.prototype = Object.create(Shape.prototype);
@@ -153,14 +148,14 @@ hovedBall.prototype.draw = function () {
   ctx.strokeStyle = this.color;
   ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
   ctx.stroke();
-  this.drawArrowToNearestBall();
+  this.drawArrowTonærmesteBall();
 };
 
-hovedBall.prototype.drawArrowToNearestBall = function () {
-  let nearestBall = this.findNearestBall();
-  if (nearestBall) {
-    let dx = nearestBall.x - this.x;
-    let dy = nearestBall.y - this.y;
+hovedBall.prototype.drawArrowTonærmesteBall = function () {
+  let nærmesteBall = this.findnærmesteBall();
+  if (nærmesteBall) {
+    let dx = nærmesteBall.x - this.x;
+    let dy = nærmesteBall.y - this.y;
     let angle = Math.atan2(dy, dx);
 
     let arrowLength = this.size * 0.75;
@@ -184,8 +179,8 @@ hovedBall.prototype.drawArrowToNearestBall = function () {
   }
 };
 
-hovedBall.prototype.findNearestBall = function () {
-  let nearestBall = null;
+hovedBall.prototype.findnærmesteBall = function () {
+  let nærmesteBall = null;
   let shortestDistance = Infinity;
 
   for (let i = 0; i < baller.length; i++) {
@@ -196,12 +191,12 @@ hovedBall.prototype.findNearestBall = function () {
 
       if (distance < shortestDistance) {
         shortestDistance = distance;
-        nearestBall = baller[i];
+        nærmesteBall = baller[i];
       }
     }
   }
 
-  return nearestBall;
+  return nærmesteBall;
 };
 
 
@@ -389,7 +384,7 @@ function loop() {
 function gjørBallerMindre() {
   let number = Math.floor((width + height) / 25 * 2);
   for (let i = 0; i < baller.length; i++) {
-    baller[i].size = baller[i].size - baller[i].size *  0.5/number;
+    baller[i].size = baller[i].size - baller[i].size * 0.5 / number;
     if (baller[i].size <= 0) {
       baller[i].exists = false;
     }
@@ -416,10 +411,10 @@ function addNewBall() {
 function startLagingAvBaller() {
   if (!spillStartet && !leggerTilNyeBaller) {
     leggerTilNyeBaller = true;
-
     let number = Math.floor((width + height) / 25);
-    hoved.totalBallsToEat = Math.floor(number / 3);
+    console.log(number)
     let i = 0;
+
     let addBallInterval = setInterval(function () {
       if (i < number) {
         let size = random(Math.floor(((width + height)) / 200), Math.floor(((width + height)) / 20));
@@ -432,6 +427,7 @@ function startLagingAvBaller() {
           'darkgreen',
           size
         );
+        console.log(i)
 
         baller.push(ball);
         i++;
@@ -441,14 +437,14 @@ function startLagingAvBaller() {
       }
     }, Math.floor((1000000) / (width + height)));
 
-    spillStartet = true;
+
   }
 }
 
 
 
 
-let animationFrameId; 
+let animationFrameId;
 
 document.getElementById('spillIgjenKnapp').addEventListener('click', function () {
   document.getElementById('spillOverSkjerm').style.display = 'none';
@@ -460,7 +456,7 @@ function resetSpill() {
   clearInterval(timerIntervall);
   clearInterval(vekstIntervall);
   cancelAnimationFrame(animationFrameId);
-  
+
 
   baller = [];
   antallSpist = 0;
@@ -476,12 +472,11 @@ function resetSpill() {
 }
 
 function startSpill() {
-
   resetSpill();
-  
+
 
   document.getElementById('control-selection').style.display = 'none';
-  
+
 
   hoved = new hovedBall(
     width / 2,
@@ -502,6 +497,8 @@ function spillOver(antallSpist, sek) {
   baller = [];
   stoppTimer();
   stoppVoksing();
+  cancelAnimationFrame(animationFrameId);
+
 
   let ballerSpistElement = document.getElementById('ballerSpist');
   let tidILiveElement = document.getElementById('tidILive');
@@ -512,7 +509,7 @@ function spillOver(antallSpist, sek) {
   tidILiveElement.textContent = sek + " sekunder";
   scoreElement.textContent = sek * hoved.ballerSpist;
 
-  if(!localStorage.highScore){
+  if (!localStorage.highScore) {
     localStorage.highScore = 0;
     highScoreElement.textContent = localStorage.highScore;
   }
