@@ -399,7 +399,6 @@ function gjørBallerMindre() {
 }
 
 function addNewBall() {
-  gjørBallerMindre();
   let number = Math.floor((width + height) / 25);
   let size = random(Math.floor(((width + height)) / 200), Math.floor(((width + height)) / 20));
   let ball = new Ball(
