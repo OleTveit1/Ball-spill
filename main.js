@@ -5,7 +5,7 @@ let width = canvas.width = window.innerWidth;
 let height = canvas.height = window.innerHeight;
 let musEllerTastatur;
 let baller = [];
-let hoved;''
+let hoved;
 let antallSpist = 0;
 let sek = 0;
 let timerIntervall;
@@ -13,8 +13,6 @@ let vekstIntervall;
 let spillStartet = false;
 let leggerTilNyeBaller = false;
 let areControlsEnabled = false;
-
-
 
 
 
